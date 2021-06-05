@@ -39,8 +39,8 @@ function fetchImages() {
     .fetchImages()
     .then(hits => {
       appendImagesMarcup(hits);
-      if (hits.length <= 12) {
-        loadMoreBtn.refs.button.classList.add('is-hidden');
+      if (hits.length < 12 || hits.length === 0) {
+        loadMoreBtn.hide();
         return;
       }
       loadMoreBtn.enable();
