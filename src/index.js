@@ -14,8 +14,6 @@ const loadMoreBtn = new LoadMoreBtn({
 });
 const apiService = new ApiService();
 
-console.log(loadMoreBtn);
-
 refs.serchForm.addEventListener('submit', onSearch);
 loadMoreBtn.refs.button.addEventListener('click', fetchImages);
 
@@ -25,14 +23,14 @@ function onSearch(e) {
   clearImageContainer();
   apiService.query = e.currentTarget.elements.query.value;
 
-  if (apiService.query === '') {
-    return alert('Введи что-то нормальное!!!');
+  if (apiService.query.trim()) {
+    loadMoreBtn.show();
+    apiService.resetPage();
+    clearImageContainer();
+    fetchImages();
+  } else {
+    alert('Введи что-то нормальное!!!');
   }
-
-  loadMoreBtn.show();
-  apiService.resetPage();
-  clearImageContainer();
-  fetchImages();
 }
 
 function fetchImages() {
@@ -41,6 +39,10 @@ function fetchImages() {
     .fetchImages()
     .then(hits => {
       appendImagesMarcup(hits);
+      if (hits.length <= 12) {
+        loadMoreBtn.refs.button.classList.add('is-hidden');
+        return;
+      }
       loadMoreBtn.enable();
     })
     .catch(error => console.log(error));
